@@ -1,5 +1,6 @@
 const peliculasContainer = document.querySelector('main.peliculas');
-const modalContainer = document.querySelector('.modal')
+const modalContainer = document.querySelector('.modal');
+const preventDefault = event => event.preventDefault();
 let page = 1;
 let last = "";
 var search = "";
@@ -20,13 +21,16 @@ async function modal(movieId) {
     let res = await fetch('https://api.themoviedb.org/3/movie/' + movieId + '?api_key=cea68b520beecac6718820e4ac576c3a&language=es-ES')
     res = await res.json();
     openClose();
+    if (res.overview === "") { res.overview = "No hay descripción disponible." }
+    const anno = res.release_date.split("-").reverse().join("/")
     modalContainer.innerHTML = "";
     modalContainer.innerHTML += `
-    <h3>Título: ${res.title}</h3>
-    <h5>Título original: ${res.original_title}</h5>
-    <p>Fecha de publicación: ${res.release_date}</p>
+    <h2>${res.title}</h2>
+    <h4>Título original: ${res.original_title}</h4>
+    <h5>Fecha de publicación: ${anno}</h5>
     <br>
-    <div class="escription">Descripción:<br>${res.overview}</div>
+    <div class="escription">Descripción:</div>
+    <blockquote><q>${res.overview}</q></blockquote>
     <br>
     <button class="boton" onclick="openClose()">Cerrar</button>
     `
@@ -48,11 +52,12 @@ function printMovies(res) {
     peliculas.forEach(pelicula => {
         const generosPelicula = generos.filter(genero => pelicula.genre_ids.includes(genero.id)).map(genero => genero.name).join(', ');
         const imagen = pelicula.poster_path ? `<img src="${baseImgUrl}${pelicula.poster_path}" onclick="modal(${pelicula.id})">` : '<img src="./images/none.jpg">'
+        const anno = pelicula.release_date.split("-").reverse().join("/")
         peliculasContainer.innerHTML += `
         <div class="pelicula">
         <h3 class="title">${pelicula.title}</h3>
         ${imagen}
-        <p>${pelicula.release_date}</p>
+        <p>${anno}</p>
         <p>${generosPelicula}</p>
         </div>`
     })

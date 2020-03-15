@@ -6,6 +6,10 @@
     box-sizing: border-box;
 }
 
+.noSelect {
+    user-select: none;
+}
+
 
 /* Modal */
 
@@ -37,6 +41,14 @@
 
 .closed {
     display: none;
+}
+
+h2 {
+    text-align: center;
+}
+
+h5 {
+    font-weight: initial;
 }
 
 
@@ -123,4 +135,28 @@
     max-width: 185px;
     text-align: center;
     margin: .5rem;
+}
+
+
+/* Media Query */
+
+@media(max-width:700px) {
+    .cabecera {
+        display: flex;
+        flex-direction: column;
+        height: initial;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    .opciones {
+        width: initial;
+        padding-bottom: .8rem;
+    }
+    .paginacion {
+        width: initial;
+        padding-bottom: .8rem;
+    }
+    .peliculas {
+        margin-top: 8rem;
+    }
 }
