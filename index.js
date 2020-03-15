@@ -41,7 +41,7 @@ window.addEventListener("click", quitarHeight);
 
 function quitarHeight(event) {
     event.target.removeEventListener(event.type, quitarHeight);
-    document.querySelector(".peliculas").classList.toggle('inicio');
+    document.querySelector(".inicio").style.height = "100%";
 }
 
 /* Meter al DOM las películas */
