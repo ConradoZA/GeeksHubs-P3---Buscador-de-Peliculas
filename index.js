@@ -2,6 +2,7 @@ const peliculasContainer = document.querySelector('main.peliculas');
 const modalContainer = document.querySelector('.modal');
 const preventDefault = event => event.preventDefault();
 let page = 1;
+var maxPages = 1;
 let last = "";
 var search = "";
 var generos = [];
@@ -40,18 +41,20 @@ async function modal(movieId) {
 window.addEventListener("click", quitarHeight);
 
 function quitarHeight(event) {
-    event.target.removeEventListener(event.type, quitarHeight);
-    document.querySelector(".inicio").style.height = "100%";
+    window.removeEventListener("click", quitarHeight);
+    document.querySelector(".peliculas").classList.remove("inicio");
 }
+
 
 /* Meter al DOM las películas */
 function printMovies(res) {
+    document.querySelector("#pag").innerHTML = `${page}`;
     const peliculas = res.results;
     peliculasContainer.innerHTML = '';
     const baseImgUrl = 'https://image.tmdb.org/t/p/w185';
     peliculas.forEach(pelicula => {
         const generosPelicula = generos.filter(genero => pelicula.genre_ids.includes(genero.id)).map(genero => genero.name).join(', ');
-        const imagen = pelicula.poster_path ? `<img src="${baseImgUrl}${pelicula.poster_path}" onclick="modal(${pelicula.id})">` : '<img src="./images/none.jpg">'
+        const imagen = pelicula.poster_path ? `<img src="${baseImgUrl}${pelicula.poster_path}" onclick="modal(${pelicula.id})">` : `<img src="./images/none.jpg" onclick="modal(${pelicula.id})">`
         const anno = pelicula.release_date.split("-").reverse().join("/")
         peliculasContainer.innerHTML += `
         <div class="pelicula">
@@ -67,7 +70,22 @@ function printMovies(res) {
 function pageAnt() {
     if (page > 1) {
         page--;
-        document.querySelector("#pag").innerHTML = `${page}`;
+        if (last === "top") {
+            getTopRated(page);
+        } else if (last === "pop") {
+            getPopular(page);
+        } else if (last === "now") {
+            getNowPlaying(page);
+        } else if (last === "search") {
+            getSearch(search, page);
+        }
+
+    }
+}
+
+function pageSig() {
+    if (page < maxPages) {
+        page++;
         if (last === "top") {
             getTopRated(page);
         } else if (last === "pop") {
@@ -80,51 +98,58 @@ function pageAnt() {
     }
 }
 
-function pageSig() {
-    page++;
-    document.querySelector("#pag").innerHTML = `${page}`;
-    if (last === "top") {
-        getTopRated(page);
-    } else if (last === "pop") {
-        getPopular(page);
-    } else if (last === "now") {
-        getNowPlaying(page);
-    } else if (last === "search") {
-        getSearch(search, page);
-    }
-}
-
 /* Botones */
 function getTopRated(page) {
-    if (last !== "top") { page = 1 }
+    if (last !== "top") { page = 1; }
     fetch('https://api.themoviedb.org/3/movie/top_rated?api_key=cea68b520beecac6718820e4ac576c3a&language=es-ES&page=' + page)
         .then(res => res.json())
+        .then(res => {
+            maxPages = res.total_pages;
+            return res;
+        })
         .then(res => printMovies(res))
     last = "top";
+
 }
 
 function getPopular(page) {
-    if (last !== "pop") { page = 1 }
+    if (last !== "pop") { page = 1; }
     fetch('https://api.themoviedb.org/3/movie/popular?api_key=cea68b520beecac6718820e4ac576c3a&language=es-ES&page=' + page)
         .then(res => res.json())
+        .then(res => {
+            maxPages = res.total_pages;
+            return res;
+        })
         .then(res => printMovies(res))
     last = "pop";
+
 }
 
 function getNowPlaying(page) {
-    if (last !== "now") { page = 1 }
+    if (last !== "now") { page = 1; }
     fetch('https://api.themoviedb.org/3/movie/now_playing?api_key=cea68b520beecac6718820e4ac576c3a&language=es-ES&region=ES&page=' + page)
         .then(res => res.json())
+        .then(res => {
+            maxPages = res.total_pages;
+            return res;
+        })
         .then(res => printMovies(res))
     last = "now";
+
 }
 
 function getSearch(search, page) {
-    if (last !== "search") { page = 1 }
+    if (last !== "search") { page = 1; }
+    console.log(page)
     fetch('https://api.themoviedb.org/3/search/movie?api_key=cea68b520beecac6718820e4ac576c3a&language=es-ES&query=' + search + '&page=' + page)
         .then(res => res.json())
+        .then(res => {
+            maxPages = res.total_pages;
+            return res;
+        })
         .then(res => printMovies(res))
     last = "search";
+
 }
 
 

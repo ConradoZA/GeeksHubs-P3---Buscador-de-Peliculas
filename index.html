@@ -13,9 +13,9 @@
 <body>
     <header class="cabecera noSelect">
         <div class="opciones">
-            <div class="boton" onclick="getTopRated(1)">Las Mejores</div>
-            <div class="boton" onclick="getPopular(1)">Populares</div>
-            <div class="boton" onclick="getNowPlaying(1)">Ahora en Cines</div>
+            <div class="boton" onclick="getTopRated(page=1)">Las Mejores</div>
+            <div class="boton" onclick="getPopular(page=1)">Populares</div>
+            <div class="boton" onclick="getNowPlaying(page=1)">Ahora en Cines</div>
         </div>
         <div class="paginacion">
             <div class="boton" onclick="pageAnt()">ant.</div>
@@ -24,7 +24,7 @@
         </div>
         <div class="buscador">
             <label for="buscarInput">Buscador</label>
-            <input type="text" class="buscarInput">
+            <input type="text" autofocus class="buscarInput">
         </div>
     </header>
 
